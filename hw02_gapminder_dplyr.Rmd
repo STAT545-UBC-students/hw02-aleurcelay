@@ -19,11 +19,47 @@ library(tidyverse)
 
 
 ## Smell test the data
+Is it a data.frame, a matrix, a vector, a list?
 
+```{r}
+gapminder
+typeof(gapminder)
+```
+When printing *gapminder* I can see the variables of the data set are arranged in columns and the observations of these variables are arranged in rows. This is a two dimensional object that holds different types of data. 
+I know this object is a data frame.
 
+The function typeof() determines the (R internal) type or storage mode of an object. The type of this data set is a list. A list in R allows to gather a variety of objects under one name in an ordered way. These objects can be matrices, vectors, data frames, other lists, etc. 
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+What is its class?
+```{r}
+class(gapminder)
+```
+The class() confirms that gapminder is a data frame. :+1:
+
+How many variables/columns?
+```{r}
+ncol(gapminder)
+```
+How many rows/observations?
+```{r}
+nrow(gapminder)
+```
+ncol() and nrow() returns the number of columns and rows, respectively.
+
+Can you get these facts about “extent” or “size” in more than one way? Can you imagine different functions being useful in different contexts?
+
+```{r}
+dim(gapminder)
+```
+I can get the same information with dim() function, the output is (number of rows, number of columns). 
+
+What data type is each variable?
+
+I can also get the above information with str() function.
+Which also returns the data type of each variable contained in the dataset:
+
+```{r}
+str(gapminder)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
