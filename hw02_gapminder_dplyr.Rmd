@@ -1,0 +1,29 @@
+---
+title: "Alejandra_hw02_gapminder_dplyr"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Gapminder exploration and use of dplyr
+This is an R Markdown document used for exploring the gapminder dataset through the functions of the dplyr package. 
+
+##Loading data
+
+```{r}
+library(gapminder)
+library(tidyverse)
+```
+
+
+## Smell test the data
+
+
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

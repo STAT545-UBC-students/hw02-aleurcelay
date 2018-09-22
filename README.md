@@ -1,6 +1,6 @@
 # hw02-aleurcelay
 
-## Hello! 
+## Hello! :raising_hand:
 
 This is the repository of my homework 2 for STAT545.
 
