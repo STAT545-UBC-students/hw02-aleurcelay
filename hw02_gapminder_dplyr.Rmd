@@ -13,8 +13,6 @@ This document is intented to serve as a "cheatsheet" for future work on R.
 
 ##Loading data
 
-[Readme](hw02_gapminder_dplyr.md)
-
 ```{r}
 library(gapminder)
 library(tidyverse)
