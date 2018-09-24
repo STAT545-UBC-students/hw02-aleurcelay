@@ -13,9 +13,12 @@ This document is intented to serve as a "cheatsheet" for future work on R.
 
 ##Loading data
 
+[Readme](hw02_gapminder_dplyr.md)
+
 ```{r}
 library(gapminder)
 library(tidyverse)
+library(knitr)
 ```
 
 
@@ -30,9 +33,10 @@ typeof(gapminder)
 When printing `gapminder` I can see the variables of the data set are arranged in columns and the observations of these variables are arranged in rows. This is a two dimensional object that holds different types of data. 
 I know this object is a data frame.
 
-The function `typeof()` determines the (R internal) type or storage mode of an object. The type of this data set is a list. A list in R allows to gather a variety of objects under one name in an ordered way. These objects can be matrices, vectors, data frames, other lists, etc. 
+The function `typeof()` determines the (R internal) type or storage mode of an object. The type of this data set is a **list**. A list in R allows to gather a variety of objects under one name in an ordered way. These objects can be matrices, vectors, data frames, other lists, etc. 
 
 What is its class?
+
 ```{r}
 class(gapminder)
 ```
@@ -57,35 +61,74 @@ I can get the same information with `dim()` function, the output is (number of r
 
 What data type is each variable?
 
-I can also get the above information with `str()` function.
-Which also returns the data type of each variable contained in the dataset:
+```{r}
+lapply(gapminder,class)
+```
+
+I can also get all the above information with `str()` function:
 
 ```{r}
 str(gapminder)
 ```
 
-##Explore individual variables
+## Explore individual variables
 
-Here I explore the categorical variable `country` and the quantitative variable of population `pop`.
+Here I explore the categorical variable `country` and the quantitative variable `lifeExp`.
 
-I would like to know how many countries are stored in the variable:
+### country
+
+I would like to know how many countries are stored within `country`:
+
 ```{r}
 n_distinct(gapminder$country)
 ```
-And the unique values (all countries) stored:
+Another way to do this is and to get all the unique values (all countries) is:
 
 ```{r}
 unique(gapminder$country)
 ```
 
-For the population variable I would like to know the range of the values first:
+### lifeExp 
+
+For the life expectancy variable I would like to know the range of the values first:
 
 ```{r}
-range(gapminder$pop)
+range(gapminder$lifeExp)
+```
+
+The range, quartiles, median, and mean can all be obtained through `summary()`:
+```{r}
+summary(gapminder$lifeExp)
+```
+
+Know I want to look at the distribution of `lifeExp` by combining the histogram of the variable and a Kernel density plot.
+
+```{r}
+ggplot(gapminder, aes(lifeExp)) +
+         geom_histogram(aes(y=..density..),fill = "cornflowerblue", bins=50) +
+  geom_density()
+```
+
+
+
+## Explore various plot types
+
+
+```{r}
+  ggplot(gapminder, aes(lifeExp,gdpPercap, color=continent)) +
+    geom_point(aes(alpha=year)) +
+    scale_y_log10()
+```
+```{r}
+a<-gapminder%>%
+  filter(year > 2000)
+a
 ```
 
 ```{r}
-summary(gapminder$pop)
+ggplot(a, aes(lifeExp,gdpPercap, color=continent)) +
+    geom_point(aes(size=year)) +
+    scale_y_log10()
 ```
 
 
