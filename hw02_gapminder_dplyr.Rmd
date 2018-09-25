@@ -111,22 +111,73 @@ ggplot(gapminder, aes(lifeExp)) +
 
 ## Explore various plot types
 
+### A scatterplot of two quantitative variables
+
+In this section I will explore gdpPercap as a function of lifeExp:
 
 ```{r}
   ggplot(gapminder, aes(lifeExp,gdpPercap, color=continent)) +
     geom_point(aes(alpha=year)) +
     scale_y_log10()
 ```
+
+In the above graph I used transparency to differentiate the year of the data.
+Now, I will just use the last year of data, which is 2007:
+
 ```{r}
 a<-gapminder%>%
-  filter(year > 2000)
+  filter(year == 2007)
 a
 ```
 
 ```{r}
 ggplot(a, aes(lifeExp,gdpPercap, color=continent)) +
-    geom_point(aes(size=year)) +
+    geom_point() +
     scale_y_log10()
+```
+This graph presents data from only one year. It is easily appreciated the difference overall between lifeExp and gdpPercap in African countries where it is lower than in Europe and Oceania.
+
+### A plot of one quantitative variable.
+
+Now, I will look at the lifeExp data arranged by continent with a frequency polygon:
+
+```{r}
+ggplot(gapminder, aes(lifeExp, color=continent)) +
+  geom_freqpoly()
+```
+
+And now lets look at the distribution of this variable among continents.
+```{r}
+ggplot(gapminder, aes(lifeExp, fill=continent)) +
+  geom_density(alpha=0.3)
+```
+...
+
+```{r include = FALSE}
+echo=FALSE
+library(cowplot)
+```
+
+
+### A plot of one quantitative variable and one categorical.
+```{r}
+g1 <- ggplot(gapminder, aes(continent, pop, fill = continent)) +
+    geom_boxplot() +
+  scale_y_log10()
+g2 <- ggplot(gapminder, aes(continent, lifeExp, fill = continent)) +
+    geom_boxplot()
+plot_grid(g1, g2)
+```
+
+```{r}
+na <- gapminder %>%
+  select(country, year, gdpPercap, lifeExp) %>%
+  filter(country %in% c("Canada", "United States", "Mexico"))
+na
+na %>%
+  ggplot(aes(x = year, y = lifeExp, group = year, color = country)) +
+  facet_wrap(~country) +
+  geom_boxplot()
 ```
 
 

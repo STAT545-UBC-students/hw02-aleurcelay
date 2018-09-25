@@ -8,21 +8,19 @@ future work on R.
 
 \#\#Loading data
 
-[Readme](hw02_gapminder_dplyr.md)
-
 ``` r
 library(gapminder)
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ──────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
     ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
     ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
     ## ✔ readr   1.1.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ─────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ───────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -278,6 +276,10 @@ ggplot(gapminder, aes(lifeExp)) +
 
 ## Explore various plot types
 
+### A scatterplot of two quantitative variables
+
+In this section I will explore gdpPercap as a function of lifeExp:
+
 ``` r
   ggplot(gapminder, aes(lifeExp,gdpPercap, color=continent)) +
     geom_point(aes(alpha=year)) +
@@ -286,31 +288,105 @@ ggplot(gapminder, aes(lifeExp)) +
 
 ![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
+In the above graph I used transparency to differentiate the year of the
+data. Now, I will just use the last year of data, which is 2007:
+
 ``` r
 a<-gapminder%>%
-  filter(year > 2000)
+  filter(year == 2007)
 a
 ```
 
-    ## # A tibble: 284 x 6
-    ##    country     continent  year lifeExp      pop gdpPercap
-    ##    <fct>       <fct>     <int>   <dbl>    <int>     <dbl>
-    ##  1 Afghanistan Asia       2002    42.1 25268405      727.
-    ##  2 Afghanistan Asia       2007    43.8 31889923      975.
-    ##  3 Albania     Europe     2002    75.7  3508512     4604.
-    ##  4 Albania     Europe     2007    76.4  3600523     5937.
-    ##  5 Algeria     Africa     2002    71.0 31287142     5288.
-    ##  6 Algeria     Africa     2007    72.3 33333216     6223.
-    ##  7 Angola      Africa     2002    41.0 10866106     2773.
-    ##  8 Angola      Africa     2007    42.7 12420476     4797.
-    ##  9 Argentina   Americas   2002    74.3 38331121     8798.
-    ## 10 Argentina   Americas   2007    75.3 40301927    12779.
-    ## # ... with 274 more rows
+    ## # A tibble: 142 x 6
+    ##    country     continent  year lifeExp       pop gdpPercap
+    ##    <fct>       <fct>     <int>   <dbl>     <int>     <dbl>
+    ##  1 Afghanistan Asia       2007    43.8  31889923      975.
+    ##  2 Albania     Europe     2007    76.4   3600523     5937.
+    ##  3 Algeria     Africa     2007    72.3  33333216     6223.
+    ##  4 Angola      Africa     2007    42.7  12420476     4797.
+    ##  5 Argentina   Americas   2007    75.3  40301927    12779.
+    ##  6 Australia   Oceania    2007    81.2  20434176    34435.
+    ##  7 Austria     Europe     2007    79.8   8199783    36126.
+    ##  8 Bahrain     Asia       2007    75.6    708573    29796.
+    ##  9 Bangladesh  Asia       2007    64.1 150448339     1391.
+    ## 10 Belgium     Europe     2007    79.4  10392226    33693.
+    ## # ... with 132 more rows
 
 ``` r
 ggplot(a, aes(lifeExp,gdpPercap, color=continent)) +
-    geom_point(aes(size=year)) +
+    geom_point() +
     scale_y_log10()
 ```
 
 ![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+This graph presents data from only one year. It is easily appreciated
+the difference overall between lifeExp and gdpPercap in African
+countries where it is lower than in Europe and Oceania.
+
+### A plot of one quantitative variable.
+
+Now, I will look at the lifeExp data arranged by continent with a
+frequency polygon:
+
+``` r
+ggplot(gapminder, aes(lifeExp, color=continent)) +
+  geom_freqpoly()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+And now lets look at the distribution of this variable among continents.
+
+``` r
+ggplot(gapminder, aes(lifeExp, fill=continent)) +
+  geom_density(alpha=0.3)
+```
+
+![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+…
+
+### A plot of one quantitative variable and one categorical.
+
+``` r
+g1 <- ggplot(gapminder, aes(continent, pop, fill = continent)) +
+    geom_boxplot() +
+  scale_y_log10()
+g2 <- ggplot(gapminder, aes(continent, lifeExp, fill = continent)) +
+    geom_boxplot()
+plot_grid(g1, g2)
+```
+
+![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+``` r
+na <- gapminder %>%
+  select(country, year, gdpPercap, lifeExp) %>%
+  filter(country %in% c("Canada", "United States", "Mexico"))
+na
+```
+
+    ## # A tibble: 36 x 4
+    ##    country  year gdpPercap lifeExp
+    ##    <fct>   <int>     <dbl>   <dbl>
+    ##  1 Canada   1952    11367.    68.8
+    ##  2 Canada   1957    12490.    70.0
+    ##  3 Canada   1962    13462.    71.3
+    ##  4 Canada   1967    16077.    72.1
+    ##  5 Canada   1972    18971.    72.9
+    ##  6 Canada   1977    22091.    74.2
+    ##  7 Canada   1982    22899.    75.8
+    ##  8 Canada   1987    26627.    76.9
+    ##  9 Canada   1992    26343.    78.0
+    ## 10 Canada   1997    28955.    78.6
+    ## # ... with 26 more rows
+
+``` r
+na %>%
+  ggplot(aes(x = year, y = lifeExp, group = year, color = country)) +
+  facet_wrap(~country) +
+  geom_boxplot()
+```
+
+![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
