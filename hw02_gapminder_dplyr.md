@@ -1,7 +1,7 @@
 Alejandra\_hw02\_gapminder\_dplyr
 ================
 
-# Gapminder exploration and use of dplyr
+## Gapminder exploration and use of dplyr
 
 This is an R Markdown document used for exploring the gapminder dataset
 through the functions of the dplyr package. This document is intented to
