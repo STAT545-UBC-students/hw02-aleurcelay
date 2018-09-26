@@ -13,14 +13,14 @@ library(gapminder)
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
     ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
     ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
     ## ✔ readr   1.1.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ───────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -100,37 +100,39 @@ Can you get these facts about “extent” or “size” in more than one way?
 Can you imagine different functions being useful in different contexts?
 
 ``` r
-dim(gapminder)
+dim(gapminder) #rows, columns
 ```
 
     ## [1] 1704    6
 
+``` r
+length(gapminder) #Number of columns
+```
+
+    ## [1] 6
+
 I can get the same information with `dim()` function, the output is
-(number of rows, number of columns).
+(number of rows, number of columns). Functions are useful depending on
+what we want to look at. If I just want to know how big is my dataset
+dim() is great, if I for example want to iterate, on either columns or
+rows, then ncol or nrow would be sufficient.
 
 What data type is each variable?
 
 ``` r
-lapply(gapminder,class)
+lapply(gapminder,class) %>%
+  as.matrix() %>%
+  kable(col.names = "Data type",align = 'lc')
 ```
 
-    ## $country
-    ## [1] "factor"
-    ## 
-    ## $continent
-    ## [1] "factor"
-    ## 
-    ## $year
-    ## [1] "integer"
-    ## 
-    ## $lifeExp
-    ## [1] "numeric"
-    ## 
-    ## $pop
-    ## [1] "integer"
-    ## 
-    ## $gdpPercap
-    ## [1] "numeric"
+|           | Data type |
+| --------- | :-------- |
+| country   | factor    |
+| continent | factor    |
+| year      | integer   |
+| lifeExp   | numeric   |
+| pop       | integer   |
+| gdpPercap | numeric   |
 
 I can also get all the above information with `str()`
     function:
@@ -163,7 +165,7 @@ n_distinct(gapminder$country)
     ## [1] 142
 
 Another way to do this is and to get all the unique values (all
-countries) is:
+countries) is by using `unique()`:
 
 ``` r
 unique(gapminder$country)
@@ -245,7 +247,7 @@ unique(gapminder$country)
 ### lifeExp
 
 For the life expectancy variable I would like to know the range of the
-values first:
+values:
 
 ``` r
 range(gapminder$lifeExp)
@@ -273,6 +275,8 @@ ggplot(gapminder, aes(lifeExp)) +
 ```
 
 ![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+The histogram shows two main peaks, where the most values are found: the
+biggest one around 70 years and the other one, close to 50 years.
 
 ## Explore various plot types
 
@@ -336,8 +340,12 @@ ggplot(gapminder, aes(lifeExp, color=continent)) +
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
 ![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+This plot shows the frequency of life expectancy values within the
+dataset. We can see a discrepancy between the most common values for
+life expectancy in Africa and Europe.
 
-And now lets look at the distribution of this variable among continents.
+And now lets look at the distribution of this same variable among
+continents.
 
 ``` r
 ggplot(gapminder, aes(lifeExp, fill=continent)) +
@@ -345,48 +353,221 @@ ggplot(gapminder, aes(lifeExp, fill=continent)) +
 ```
 
 ![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
-…
+In this plot it is easily appreciated that Europe and Oceania present a
+more homogenous distribution of life expectancy, while the rest of the
+continents have a wider range of values, probably because of bigger
+socio-economic gaps between countries.
 
 ### A plot of one quantitative variable and one categorical.
 
+First, I will arrange my data:
+
 ``` r
-g1 <- ggplot(gapminder, aes(continent, pop, fill = continent)) +
-    geom_boxplot() +
-  scale_y_log10()
-g2 <- ggplot(gapminder, aes(continent, lifeExp, fill = continent)) +
-    geom_boxplot()
-plot_grid(g1, g2)
+# for the gapminder, group by continent
+# to show the average Life Expectancy (LE) per continent
+LEbyCont <- gapminder %>% 
+  group_by(continent) %>% 
+  summarize(avgLE = mean(lifeExp)) 
+
+kable(LEbyCont, #Table to plot
+      col.names = c('Continent', 'Avg. Life Expectancy'), #name the columns
+      digits = 1, #round to 1 decimal
+      align = 'lc') #Column alignment 'lc' is for the first column left aligned 'l', and second centered 'c'
 ```
 
-![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+| Continent | Avg. Life Expectancy |
+| :-------- | :------------------: |
+| Africa    |         48.9         |
+| Americas  |         64.7         |
+| Asia      |         60.1         |
+| Europe    |         71.9         |
+| Oceania   |         74.3         |
 
 ``` r
-na <- gapminder %>%
-  select(country, year, gdpPercap, lifeExp) %>%
-  filter(country %in% c("Canada", "United States", "Mexico"))
-na
+#LEbyCont
 ```
 
-    ## # A tibble: 36 x 4
-    ##    country  year gdpPercap lifeExp
-    ##    <fct>   <int>     <dbl>   <dbl>
-    ##  1 Canada   1952    11367.    68.8
-    ##  2 Canada   1957    12490.    70.0
-    ##  3 Canada   1962    13462.    71.3
-    ##  4 Canada   1967    16077.    72.1
-    ##  5 Canada   1972    18971.    72.9
-    ##  6 Canada   1977    22091.    74.2
-    ##  7 Canada   1982    22899.    75.8
-    ##  8 Canada   1987    26627.    76.9
-    ##  9 Canada   1992    26343.    78.0
-    ## 10 Canada   1997    28955.    78.6
-    ## # ... with 26 more rows
+Now I will do the plot to present average of life expectancy in each
+continent.
 
 ``` r
-na %>%
-  ggplot(aes(x = year, y = lifeExp, group = year, color = country)) +
-  facet_wrap(~country) +
-  geom_boxplot()
+# plot the avg Life Expectancy for each continent
+
+LEbyCont <- LEbyCont %>% mutate(avgLE = round(avgLE, 1)) #round numbers of Avg. Life Expectancy
+ggplot(LEbyCont, #table to plot
+  aes(x = continent, y = avgLE, color = continent, label = avgLE)) +  #aesthetic mappings and select the AvgLE as the     labels on the plot
+  geom_point(size=4) + #size of points in the plot
+  ggtitle("Life Expectancy by Continent") +  #title of the plot
+  xlab("Continent") + ylab("Avg. Life Expectancy (years)") + #x and y labels
+  geom_text(aes(label=avgLE),hjust=-0.3, vjust=0)#adjust the place of the labels
 ```
 
 ![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+
+Here, it is easily appreciated the overall difference of the average
+life expectancy between continents.
+
+``` r
+g1 <- ggplot(gapminder, aes(continent, pop, fill = continent)) +
+      geom_boxplot() +
+      scale_y_log10() +
+      theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1)) +
+      xlab("")
+g2 <- ggplot(gapminder, aes(continent, lifeExp, fill = continent)) +
+      geom_boxplot()+
+      theme(legend.title = element_blank(), legend.position="none", axis.text.x = element_text(angle = 45, hjust = 1))+
+      xlab("")
+plot_grid(g1, g2) #used plot_grid to put plots together
+```
+
+![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+
+The boxplots show population and life expectancy variables for all the
+continents. We can see a wide spread distribution of both variables
+mostly in Asia and Africa. Although there are distinct outliers in both
+plots, I was particularly interested on the outlier in Africa, where
+life expectancy is very low.
+
+## Use filter(), select() and %\>%
+
+So let’s try to find that data point:
+
+``` r
+x<-gapminder %>%
+  filter(continent %in% "Africa", lifeExp<30) %>%
+  select(country,lifeExp, year)
+x
+```
+
+    ## # A tibble: 1 x 3
+    ##   country lifeExp  year
+    ##   <fct>     <dbl> <int>
+    ## 1 Rwanda     23.6  1992
+
+After finding this very low value of life expectancy in Rwanda in 1992,
+I researched a bit for an explanation of this, and learnt about the
+Rwandan Civil War during which many people were killed and therefore,
+the impact on this variable.
+
+I want to see how life expectancy in Rwanda behaved before and after
+this event:
+
+``` r
+gapminder%>%
+  filter(country %in% c("Rwanda")) %>%
+  select(lifeExp, year) %>%
+  ggplot(aes(year,lifeExp)) +
+  ggtitle("Historical Life Expectancy in Rwanda") +
+  geom_point(color="red") +
+  geom_path(alpha=0.2)
+```
+
+![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+We can see that before this event, the trend of life expectancy was to
+go higher, but becaise of this terrible event, life expectancy drop
+dramatically and took about 20 years to recover.
+
+I suspect this event also impacted the variable of population:
+
+``` r
+gapminder%>%
+  filter(country %in% c("Rwanda")) %>%
+  select(pop, year) %>%
+  ggplot(aes(year,pop)) +
+  ggtitle("Historical population in Rwanda") +
+  geom_point(color="red") +
+  geom_path(alpha=0.2)
+```
+
+![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+In this graph we can see that not only the population didn’t grow but it
+even decreased during this period of Rwanda’s history.
+
+## But I want to do more\!
+
+Evaluate this code and describe the result. Presumably the analyst’s
+intent was to get the data for Rwanda and Afghanistan. Did they succeed?
+Why or why not? If not, what is the correct way to do this?
+
+``` r
+filter(gapminder, country == c("Rwanda", "Afghanistan")) %>%
+  kable(.)
+```
+
+| country     | continent | year | lifeExp |      pop | gdpPercap |
+| :---------- | :-------- | ---: | ------: | -------: | --------: |
+| Afghanistan | Asia      | 1957 |  30.332 |  9240934 |  820.8530 |
+| Afghanistan | Asia      | 1967 |  34.020 | 11537966 |  836.1971 |
+| Afghanistan | Asia      | 1977 |  38.438 | 14880372 |  786.1134 |
+| Afghanistan | Asia      | 1987 |  40.822 | 13867957 |  852.3959 |
+| Afghanistan | Asia      | 1997 |  41.763 | 22227415 |  635.3414 |
+| Afghanistan | Asia      | 2007 |  43.828 | 31889923 |  974.5803 |
+| Rwanda      | Africa    | 1952 |  40.000 |  2534927 |  493.3239 |
+| Rwanda      | Africa    | 1962 |  43.000 |  3051242 |  597.4731 |
+| Rwanda      | Africa    | 1972 |  44.600 |  3992121 |  590.5807 |
+| Rwanda      | Africa    | 1982 |  46.218 |  5507565 |  881.5706 |
+| Rwanda      | Africa    | 1992 |  23.599 |  7290203 |  737.0686 |
+| Rwanda      | Africa    | 2002 |  43.413 |  7852401 |  785.6538 |
+
+When running this code, I can see that some years of data are missing,
+since == is a logical operator that compares two things that are the
+same length. So in this sense, as we have 12 years of data 6 and 6 go to
+each country. So if we add a third country, 4 years would be displayed
+for each one as shown below:
+
+``` r
+filter(gapminder, country == c("Rwanda", "Afghanistan", "Mexico")) %>%
+  kable(.)
+```
+
+| country     | continent | year | lifeExp |       pop |  gdpPercap |
+| :---------- | :-------- | ---: | ------: | --------: | ---------: |
+| Afghanistan | Asia      | 1957 |  30.332 |   9240934 |   820.8530 |
+| Afghanistan | Asia      | 1972 |  36.088 |  13079460 |   739.9811 |
+| Afghanistan | Asia      | 1987 |  40.822 |  13867957 |   852.3959 |
+| Afghanistan | Asia      | 2002 |  42.129 |  25268405 |   726.7341 |
+| Mexico      | Americas  | 1962 |  58.299 |  41121485 |  4581.6094 |
+| Mexico      | Americas  | 1977 |  65.032 |  63759976 |  7674.9291 |
+| Mexico      | Americas  | 1992 |  71.455 |  88111030 |  9472.3843 |
+| Mexico      | Americas  | 2007 |  76.195 | 108700891 | 11977.5750 |
+| Rwanda      | Africa    | 1952 |  40.000 |   2534927 |   493.3239 |
+| Rwanda      | Africa    | 1967 |  44.100 |   3451079 |   510.9637 |
+| Rwanda      | Africa    | 1982 |  46.218 |   5507565 |   881.5706 |
+| Rwanda      | Africa    | 1997 |  36.087 |   7212583 |   589.9445 |
+
+To extract all the data from Rwanda and Afghanistan, the analyst should
+use `%in%` operator instead. Let’s try it:
+
+``` r
+filter(gapminder, country %in% c("Rwanda", "Afghanistan")) %>%
+  kable(.)
+```
+
+| country     | continent | year | lifeExp |      pop | gdpPercap |
+| :---------- | :-------- | ---: | ------: | -------: | --------: |
+| Afghanistan | Asia      | 1952 |  28.801 |  8425333 |  779.4453 |
+| Afghanistan | Asia      | 1957 |  30.332 |  9240934 |  820.8530 |
+| Afghanistan | Asia      | 1962 |  31.997 | 10267083 |  853.1007 |
+| Afghanistan | Asia      | 1967 |  34.020 | 11537966 |  836.1971 |
+| Afghanistan | Asia      | 1972 |  36.088 | 13079460 |  739.9811 |
+| Afghanistan | Asia      | 1977 |  38.438 | 14880372 |  786.1134 |
+| Afghanistan | Asia      | 1982 |  39.854 | 12881816 |  978.0114 |
+| Afghanistan | Asia      | 1987 |  40.822 | 13867957 |  852.3959 |
+| Afghanistan | Asia      | 1992 |  41.674 | 16317921 |  649.3414 |
+| Afghanistan | Asia      | 1997 |  41.763 | 22227415 |  635.3414 |
+| Afghanistan | Asia      | 2002 |  42.129 | 25268405 |  726.7341 |
+| Afghanistan | Asia      | 2007 |  43.828 | 31889923 |  974.5803 |
+| Rwanda      | Africa    | 1952 |  40.000 |  2534927 |  493.3239 |
+| Rwanda      | Africa    | 1957 |  41.500 |  2822082 |  540.2894 |
+| Rwanda      | Africa    | 1962 |  43.000 |  3051242 |  597.4731 |
+| Rwanda      | Africa    | 1967 |  44.100 |  3451079 |  510.9637 |
+| Rwanda      | Africa    | 1972 |  44.600 |  3992121 |  590.5807 |
+| Rwanda      | Africa    | 1977 |  45.000 |  4657072 |  670.0806 |
+| Rwanda      | Africa    | 1982 |  46.218 |  5507565 |  881.5706 |
+| Rwanda      | Africa    | 1987 |  44.020 |  6349365 |  847.9912 |
+| Rwanda      | Africa    | 1992 |  23.599 |  7290203 |  737.0686 |
+| Rwanda      | Africa    | 1997 |  36.087 |  7212583 |  589.9445 |
+| Rwanda      | Africa    | 2002 |  43.413 |  7852401 |  785.6538 |
+| Rwanda      | Africa    | 2007 |  46.242 |  8860588 |  863.0885 |
+
+Now we have all the data from both countries :thumbsup:
