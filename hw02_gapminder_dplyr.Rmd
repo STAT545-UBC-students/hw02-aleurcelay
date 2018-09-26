@@ -264,6 +264,7 @@ gapminder%>%
   geom_point(color="red") +
   geom_path(alpha=0.2)
 ```
+
 We can see that before this event, the trend of life expectancy was to go higher, but becaise of this terrible event, life expectancy drop dramatically and took about 20 years to recover. 
 
 I suspect this event also impacted the variable of population:
@@ -277,6 +278,7 @@ gapminder%>%
   geom_point(color="red") +
   geom_path(alpha=0.2)
 ```
+
 In this graph we can see that not only the population didn't grow but it even decreased during this period of Rwanda's history.
 
 ## But I want to do more!

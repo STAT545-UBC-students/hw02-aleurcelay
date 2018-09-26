@@ -1141,6 +1141,7 @@ gapminder%>%
 ```
 
 ![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+
 We can see that before this event, the trend of life expectancy was to
 go higher, but becaise of this terrible event, life expectancy drop
 dramatically and took about 20 years to recover.
@@ -1158,6 +1159,7 @@ gapminder%>%
 ```
 
 ![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+
 In this graph we can see that not only the population didn’t grow but it
 even decreased during this period of Rwanda’s history.
 
