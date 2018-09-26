@@ -27,6 +27,7 @@ library(tidyverse)
 
 ``` r
 library(knitr)
+library(kableExtra)
 ```
 
 ## Smell test the data
@@ -34,23 +35,301 @@ library(knitr)
 **Is it a data.frame, a matrix, a vector, a list?**
 
 ``` r
-gapminder
+kable(head(gapminder)) %>%
+kable_styling()
 ```
 
-    ## # A tibble: 1,704 x 6
-    ##    country     continent  year lifeExp      pop gdpPercap
-    ##    <fct>       <fct>     <int>   <dbl>    <int>     <dbl>
-    ##  1 Afghanistan Asia       1952    28.8  8425333      779.
-    ##  2 Afghanistan Asia       1957    30.3  9240934      821.
-    ##  3 Afghanistan Asia       1962    32.0 10267083      853.
-    ##  4 Afghanistan Asia       1967    34.0 11537966      836.
-    ##  5 Afghanistan Asia       1972    36.1 13079460      740.
-    ##  6 Afghanistan Asia       1977    38.4 14880372      786.
-    ##  7 Afghanistan Asia       1982    39.9 12881816      978.
-    ##  8 Afghanistan Asia       1987    40.8 13867957      852.
-    ##  9 Afghanistan Asia       1992    41.7 16317921      649.
-    ## 10 Afghanistan Asia       1997    41.8 22227415      635.
-    ## # ... with 1,694 more rows
+<table class="table" style="margin-left: auto; margin-right: auto;">
+
+<thead>
+
+<tr>
+
+<th style="text-align:left;">
+
+country
+
+</th>
+
+<th style="text-align:left;">
+
+continent
+
+</th>
+
+<th style="text-align:right;">
+
+year
+
+</th>
+
+<th style="text-align:right;">
+
+lifeExp
+
+</th>
+
+<th style="text-align:right;">
+
+pop
+
+</th>
+
+<th style="text-align:right;">
+
+gdpPercap
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1952
+
+</td>
+
+<td style="text-align:right;">
+
+28.801
+
+</td>
+
+<td style="text-align:right;">
+
+8425333
+
+</td>
+
+<td style="text-align:right;">
+
+779.4453
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1957
+
+</td>
+
+<td style="text-align:right;">
+
+30.332
+
+</td>
+
+<td style="text-align:right;">
+
+9240934
+
+</td>
+
+<td style="text-align:right;">
+
+820.8530
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1962
+
+</td>
+
+<td style="text-align:right;">
+
+31.997
+
+</td>
+
+<td style="text-align:right;">
+
+10267083
+
+</td>
+
+<td style="text-align:right;">
+
+853.1007
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1967
+
+</td>
+
+<td style="text-align:right;">
+
+34.020
+
+</td>
+
+<td style="text-align:right;">
+
+11537966
+
+</td>
+
+<td style="text-align:right;">
+
+836.1971
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1972
+
+</td>
+
+<td style="text-align:right;">
+
+36.088
+
+</td>
+
+<td style="text-align:right;">
+
+13079460
+
+</td>
+
+<td style="text-align:right;">
+
+739.9811
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1977
+
+</td>
+
+<td style="text-align:right;">
+
+38.438
+
+</td>
+
+<td style="text-align:right;">
+
+14880372
+
+</td>
+
+<td style="text-align:right;">
+
+786.1134
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
 
 ``` r
 typeof(gapminder)
@@ -58,10 +337,11 @@ typeof(gapminder)
 
     ## [1] "list"
 
-When printing `gapminder` I can see the variables of the data set are
-arranged in columns and the observations of these variables are arranged
-in rows. This is a two dimensional object that holds different types of
-data. I know this object is a data frame.
+When printing `head(gapminder)` I can see the variables of the data set
+and the first rows. The data is arranged in columns, and the
+observations of these variables are arranged in rows. This is a two
+dimensional object that holds different types of data. I know this
+object is a data frame.
 
 The function `typeof()` determines the (R internal) type or storage mode
 of an object. The type of this data set is a **list**. A list in R
@@ -124,17 +404,131 @@ rows, then ncol or nrow would be sufficient.
 ``` r
 lapply(gapminder,class) %>%
   as.matrix() %>%
-  kable(col.names = "Data type",align = 'lc')
+  kable(col.names = "Data type",align = 'lc') %>%
+  kable_styling()
 ```
 
-|           | Data type |
-| --------- | :-------- |
-| country   | factor    |
-| continent | factor    |
-| year      | integer   |
-| lifeExp   | numeric   |
-| pop       | integer   |
-| gdpPercap | numeric   |
+<table class="table" style="margin-left: auto; margin-right: auto;">
+
+<thead>
+
+<tr>
+
+<th style="text-align:left;">
+
+</th>
+
+<th style="text-align:left;">
+
+Data type
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:left;">
+
+country
+
+</td>
+
+<td style="text-align:left;">
+
+factor
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+continent
+
+</td>
+
+<td style="text-align:left;">
+
+factor
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+year
+
+</td>
+
+<td style="text-align:left;">
+
+integer
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+lifeExp
+
+</td>
+
+<td style="text-align:left;">
+
+numeric
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+pop
+
+</td>
+
+<td style="text-align:left;">
+
+integer
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+gdpPercap
+
+</td>
+
+<td style="text-align:left;">
+
+numeric
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
 
 I can also get all the above information with `str()`
     function:
@@ -150,6 +544,183 @@ str(gapminder)
     ##  $ lifeExp  : num  28.8 30.3 32 34 36.1 ...
     ##  $ pop      : int  8425333 9240934 10267083 11537966 13079460 14880372 12881816 13867957 16317921 22227415 ...
     ##  $ gdpPercap: num  779 821 853 836 740 ...
+
+``` r
+#Work around to show the data in a nice table:
+data.frame(variable = names(gapminder),
+          classe = sapply(gapminder, typeof),
+          first_values = sapply(gapminder, function(x) paste0(head(x),  collapse = ", ")),
+          row.names = NULL) %>% 
+          kable() %>%
+          kable_styling()
+```
+
+<table class="table" style="margin-left: auto; margin-right: auto;">
+
+<thead>
+
+<tr>
+
+<th style="text-align:left;">
+
+variable
+
+</th>
+
+<th style="text-align:left;">
+
+classe
+
+</th>
+
+<th style="text-align:left;">
+
+first\_values
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:left;">
+
+country
+
+</td>
+
+<td style="text-align:left;">
+
+integer
+
+</td>
+
+<td style="text-align:left;">
+
+Afghanistan, Afghanistan, Afghanistan, Afghanistan, Afghanistan,
+Afghanistan
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+continent
+
+</td>
+
+<td style="text-align:left;">
+
+integer
+
+</td>
+
+<td style="text-align:left;">
+
+Asia, Asia, Asia, Asia, Asia, Asia
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+year
+
+</td>
+
+<td style="text-align:left;">
+
+integer
+
+</td>
+
+<td style="text-align:left;">
+
+1952, 1957, 1962, 1967, 1972, 1977
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+lifeExp
+
+</td>
+
+<td style="text-align:left;">
+
+double
+
+</td>
+
+<td style="text-align:left;">
+
+28.801, 30.332, 31.997, 34.02, 36.088, 38.438
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+pop
+
+</td>
+
+<td style="text-align:left;">
+
+integer
+
+</td>
+
+<td style="text-align:left;">
+
+8425333, 9240934, 10267083, 11537966, 13079460, 14880372
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+gdpPercap
+
+</td>
+
+<td style="text-align:left;">
+
+double
+
+</td>
+
+<td style="text-align:left;">
+
+779.4453145, 820.8530296, 853.10071, 836.1971382, 739.9811058, 786.11336
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
 
 ## Explore individual variables
 
@@ -277,6 +848,7 @@ ggplot(gapminder, aes(lifeExp)) +
 ```
 
 ![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
 The histogram shows two main peaks, where the most values are found: the
 biggest one around 70 years and the other one, close to 50 years.
 
@@ -325,6 +897,7 @@ ggplot(a, aes(lifeExp,gdpPercap, color=continent)) +
 ```
 
 ![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
 This graph presents data from only one year. It is easily appreciated
 the difference overall between lifeExp and gdpPercap in African
 countries where it is lower than in Europe and Oceania.
@@ -342,6 +915,7 @@ ggplot(gapminder, aes(lifeExp, color=continent)) +
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
 ![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
 This plot shows the frequency of life expectancy values within the
 dataset. We can see a discrepancy between the most common values for
 life expectancy in Africa and Europe.
@@ -355,6 +929,7 @@ ggplot(gapminder, aes(lifeExp, fill=continent)) +
 ```
 
 ![](hw02_gapminder_dplyr_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
 In this plot it is easily appreciated that Europe and Oceania present a
 more homogenous distribution of life expectancy, while the rest of the
 continents have a wider range of values, probably because of bigger
@@ -377,13 +952,113 @@ kable(LEbyCont, #Table to plot
       align = 'lc') #Column alignment 'lc' is for the first column left aligned 'l', and second centered 'c'
 ```
 
-| Continent | Avg. Life Expectancy |
-| :-------- | :------------------: |
-| Africa    |         48.9         |
-| Americas  |         64.7         |
-| Asia      |         60.1         |
-| Europe    |         71.9         |
-| Oceania   |         74.3         |
+<table>
+
+<thead>
+
+<tr>
+
+<th style="text-align:left;">
+
+Continent
+
+</th>
+
+<th style="text-align:center;">
+
+Avg. Life Expectancy
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:center;">
+
+48.9
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Americas
+
+</td>
+
+<td style="text-align:center;">
+
+64.7
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:center;">
+
+60.1
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Europe
+
+</td>
+
+<td style="text-align:center;">
+
+71.9
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Oceania
+
+</td>
+
+<td style="text-align:center;">
+
+74.3
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
 
 ``` r
 #LEbyCont
@@ -497,20 +1172,537 @@ filter(gapminder, country == c("Rwanda", "Afghanistan")) %>%
   kable(.)
 ```
 
-| country     | continent | year | lifeExp |      pop | gdpPercap |
-| :---------- | :-------- | ---: | ------: | -------: | --------: |
-| Afghanistan | Asia      | 1957 |  30.332 |  9240934 |  820.8530 |
-| Afghanistan | Asia      | 1967 |  34.020 | 11537966 |  836.1971 |
-| Afghanistan | Asia      | 1977 |  38.438 | 14880372 |  786.1134 |
-| Afghanistan | Asia      | 1987 |  40.822 | 13867957 |  852.3959 |
-| Afghanistan | Asia      | 1997 |  41.763 | 22227415 |  635.3414 |
-| Afghanistan | Asia      | 2007 |  43.828 | 31889923 |  974.5803 |
-| Rwanda      | Africa    | 1952 |  40.000 |  2534927 |  493.3239 |
-| Rwanda      | Africa    | 1962 |  43.000 |  3051242 |  597.4731 |
-| Rwanda      | Africa    | 1972 |  44.600 |  3992121 |  590.5807 |
-| Rwanda      | Africa    | 1982 |  46.218 |  5507565 |  881.5706 |
-| Rwanda      | Africa    | 1992 |  23.599 |  7290203 |  737.0686 |
-| Rwanda      | Africa    | 2002 |  43.413 |  7852401 |  785.6538 |
+<table>
+
+<thead>
+
+<tr>
+
+<th style="text-align:left;">
+
+country
+
+</th>
+
+<th style="text-align:left;">
+
+continent
+
+</th>
+
+<th style="text-align:right;">
+
+year
+
+</th>
+
+<th style="text-align:right;">
+
+lifeExp
+
+</th>
+
+<th style="text-align:right;">
+
+pop
+
+</th>
+
+<th style="text-align:right;">
+
+gdpPercap
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1957
+
+</td>
+
+<td style="text-align:right;">
+
+30.332
+
+</td>
+
+<td style="text-align:right;">
+
+9240934
+
+</td>
+
+<td style="text-align:right;">
+
+820.8530
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1967
+
+</td>
+
+<td style="text-align:right;">
+
+34.020
+
+</td>
+
+<td style="text-align:right;">
+
+11537966
+
+</td>
+
+<td style="text-align:right;">
+
+836.1971
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1977
+
+</td>
+
+<td style="text-align:right;">
+
+38.438
+
+</td>
+
+<td style="text-align:right;">
+
+14880372
+
+</td>
+
+<td style="text-align:right;">
+
+786.1134
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1987
+
+</td>
+
+<td style="text-align:right;">
+
+40.822
+
+</td>
+
+<td style="text-align:right;">
+
+13867957
+
+</td>
+
+<td style="text-align:right;">
+
+852.3959
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1997
+
+</td>
+
+<td style="text-align:right;">
+
+41.763
+
+</td>
+
+<td style="text-align:right;">
+
+22227415
+
+</td>
+
+<td style="text-align:right;">
+
+635.3414
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+2007
+
+</td>
+
+<td style="text-align:right;">
+
+43.828
+
+</td>
+
+<td style="text-align:right;">
+
+31889923
+
+</td>
+
+<td style="text-align:right;">
+
+974.5803
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1952
+
+</td>
+
+<td style="text-align:right;">
+
+40.000
+
+</td>
+
+<td style="text-align:right;">
+
+2534927
+
+</td>
+
+<td style="text-align:right;">
+
+493.3239
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1962
+
+</td>
+
+<td style="text-align:right;">
+
+43.000
+
+</td>
+
+<td style="text-align:right;">
+
+3051242
+
+</td>
+
+<td style="text-align:right;">
+
+597.4731
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1972
+
+</td>
+
+<td style="text-align:right;">
+
+44.600
+
+</td>
+
+<td style="text-align:right;">
+
+3992121
+
+</td>
+
+<td style="text-align:right;">
+
+590.5807
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1982
+
+</td>
+
+<td style="text-align:right;">
+
+46.218
+
+</td>
+
+<td style="text-align:right;">
+
+5507565
+
+</td>
+
+<td style="text-align:right;">
+
+881.5706
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1992
+
+</td>
+
+<td style="text-align:right;">
+
+23.599
+
+</td>
+
+<td style="text-align:right;">
+
+7290203
+
+</td>
+
+<td style="text-align:right;">
+
+737.0686
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+2002
+
+</td>
+
+<td style="text-align:right;">
+
+43.413
+
+</td>
+
+<td style="text-align:right;">
+
+7852401
+
+</td>
+
+<td style="text-align:right;">
+
+785.6538
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
 
 When running this code, I can see that some years of data are missing,
 since == is a logical operator that compares two things that are the
@@ -523,20 +1715,537 @@ filter(gapminder, country == c("Rwanda", "Afghanistan", "Mexico")) %>%
   kable(.)
 ```
 
-| country     | continent | year | lifeExp |       pop |  gdpPercap |
-| :---------- | :-------- | ---: | ------: | --------: | ---------: |
-| Afghanistan | Asia      | 1957 |  30.332 |   9240934 |   820.8530 |
-| Afghanistan | Asia      | 1972 |  36.088 |  13079460 |   739.9811 |
-| Afghanistan | Asia      | 1987 |  40.822 |  13867957 |   852.3959 |
-| Afghanistan | Asia      | 2002 |  42.129 |  25268405 |   726.7341 |
-| Mexico      | Americas  | 1962 |  58.299 |  41121485 |  4581.6094 |
-| Mexico      | Americas  | 1977 |  65.032 |  63759976 |  7674.9291 |
-| Mexico      | Americas  | 1992 |  71.455 |  88111030 |  9472.3843 |
-| Mexico      | Americas  | 2007 |  76.195 | 108700891 | 11977.5750 |
-| Rwanda      | Africa    | 1952 |  40.000 |   2534927 |   493.3239 |
-| Rwanda      | Africa    | 1967 |  44.100 |   3451079 |   510.9637 |
-| Rwanda      | Africa    | 1982 |  46.218 |   5507565 |   881.5706 |
-| Rwanda      | Africa    | 1997 |  36.087 |   7212583 |   589.9445 |
+<table>
+
+<thead>
+
+<tr>
+
+<th style="text-align:left;">
+
+country
+
+</th>
+
+<th style="text-align:left;">
+
+continent
+
+</th>
+
+<th style="text-align:right;">
+
+year
+
+</th>
+
+<th style="text-align:right;">
+
+lifeExp
+
+</th>
+
+<th style="text-align:right;">
+
+pop
+
+</th>
+
+<th style="text-align:right;">
+
+gdpPercap
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1957
+
+</td>
+
+<td style="text-align:right;">
+
+30.332
+
+</td>
+
+<td style="text-align:right;">
+
+9240934
+
+</td>
+
+<td style="text-align:right;">
+
+820.8530
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1972
+
+</td>
+
+<td style="text-align:right;">
+
+36.088
+
+</td>
+
+<td style="text-align:right;">
+
+13079460
+
+</td>
+
+<td style="text-align:right;">
+
+739.9811
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1987
+
+</td>
+
+<td style="text-align:right;">
+
+40.822
+
+</td>
+
+<td style="text-align:right;">
+
+13867957
+
+</td>
+
+<td style="text-align:right;">
+
+852.3959
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+2002
+
+</td>
+
+<td style="text-align:right;">
+
+42.129
+
+</td>
+
+<td style="text-align:right;">
+
+25268405
+
+</td>
+
+<td style="text-align:right;">
+
+726.7341
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Mexico
+
+</td>
+
+<td style="text-align:left;">
+
+Americas
+
+</td>
+
+<td style="text-align:right;">
+
+1962
+
+</td>
+
+<td style="text-align:right;">
+
+58.299
+
+</td>
+
+<td style="text-align:right;">
+
+41121485
+
+</td>
+
+<td style="text-align:right;">
+
+4581.6094
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Mexico
+
+</td>
+
+<td style="text-align:left;">
+
+Americas
+
+</td>
+
+<td style="text-align:right;">
+
+1977
+
+</td>
+
+<td style="text-align:right;">
+
+65.032
+
+</td>
+
+<td style="text-align:right;">
+
+63759976
+
+</td>
+
+<td style="text-align:right;">
+
+7674.9291
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Mexico
+
+</td>
+
+<td style="text-align:left;">
+
+Americas
+
+</td>
+
+<td style="text-align:right;">
+
+1992
+
+</td>
+
+<td style="text-align:right;">
+
+71.455
+
+</td>
+
+<td style="text-align:right;">
+
+88111030
+
+</td>
+
+<td style="text-align:right;">
+
+9472.3843
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Mexico
+
+</td>
+
+<td style="text-align:left;">
+
+Americas
+
+</td>
+
+<td style="text-align:right;">
+
+2007
+
+</td>
+
+<td style="text-align:right;">
+
+76.195
+
+</td>
+
+<td style="text-align:right;">
+
+108700891
+
+</td>
+
+<td style="text-align:right;">
+
+11977.5750
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1952
+
+</td>
+
+<td style="text-align:right;">
+
+40.000
+
+</td>
+
+<td style="text-align:right;">
+
+2534927
+
+</td>
+
+<td style="text-align:right;">
+
+493.3239
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1967
+
+</td>
+
+<td style="text-align:right;">
+
+44.100
+
+</td>
+
+<td style="text-align:right;">
+
+3451079
+
+</td>
+
+<td style="text-align:right;">
+
+510.9637
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1982
+
+</td>
+
+<td style="text-align:right;">
+
+46.218
+
+</td>
+
+<td style="text-align:right;">
+
+5507565
+
+</td>
+
+<td style="text-align:right;">
+
+881.5706
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1997
+
+</td>
+
+<td style="text-align:right;">
+
+36.087
+
+</td>
+
+<td style="text-align:right;">
+
+7212583
+
+</td>
+
+<td style="text-align:right;">
+
+589.9445
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
 
 To extract all the data from Rwanda and Afghanistan, the analyst should
 use `%in%` operator instead. Let’s try it:
@@ -546,31 +2255,1016 @@ filter(gapminder, country %in% c("Rwanda", "Afghanistan")) %>%
   kable(.)
 ```
 
-| country     | continent | year | lifeExp |      pop | gdpPercap |
-| :---------- | :-------- | ---: | ------: | -------: | --------: |
-| Afghanistan | Asia      | 1952 |  28.801 |  8425333 |  779.4453 |
-| Afghanistan | Asia      | 1957 |  30.332 |  9240934 |  820.8530 |
-| Afghanistan | Asia      | 1962 |  31.997 | 10267083 |  853.1007 |
-| Afghanistan | Asia      | 1967 |  34.020 | 11537966 |  836.1971 |
-| Afghanistan | Asia      | 1972 |  36.088 | 13079460 |  739.9811 |
-| Afghanistan | Asia      | 1977 |  38.438 | 14880372 |  786.1134 |
-| Afghanistan | Asia      | 1982 |  39.854 | 12881816 |  978.0114 |
-| Afghanistan | Asia      | 1987 |  40.822 | 13867957 |  852.3959 |
-| Afghanistan | Asia      | 1992 |  41.674 | 16317921 |  649.3414 |
-| Afghanistan | Asia      | 1997 |  41.763 | 22227415 |  635.3414 |
-| Afghanistan | Asia      | 2002 |  42.129 | 25268405 |  726.7341 |
-| Afghanistan | Asia      | 2007 |  43.828 | 31889923 |  974.5803 |
-| Rwanda      | Africa    | 1952 |  40.000 |  2534927 |  493.3239 |
-| Rwanda      | Africa    | 1957 |  41.500 |  2822082 |  540.2894 |
-| Rwanda      | Africa    | 1962 |  43.000 |  3051242 |  597.4731 |
-| Rwanda      | Africa    | 1967 |  44.100 |  3451079 |  510.9637 |
-| Rwanda      | Africa    | 1972 |  44.600 |  3992121 |  590.5807 |
-| Rwanda      | Africa    | 1977 |  45.000 |  4657072 |  670.0806 |
-| Rwanda      | Africa    | 1982 |  46.218 |  5507565 |  881.5706 |
-| Rwanda      | Africa    | 1987 |  44.020 |  6349365 |  847.9912 |
-| Rwanda      | Africa    | 1992 |  23.599 |  7290203 |  737.0686 |
-| Rwanda      | Africa    | 1997 |  36.087 |  7212583 |  589.9445 |
-| Rwanda      | Africa    | 2002 |  43.413 |  7852401 |  785.6538 |
-| Rwanda      | Africa    | 2007 |  46.242 |  8860588 |  863.0885 |
+<table>
+
+<thead>
+
+<tr>
+
+<th style="text-align:left;">
+
+country
+
+</th>
+
+<th style="text-align:left;">
+
+continent
+
+</th>
+
+<th style="text-align:right;">
+
+year
+
+</th>
+
+<th style="text-align:right;">
+
+lifeExp
+
+</th>
+
+<th style="text-align:right;">
+
+pop
+
+</th>
+
+<th style="text-align:right;">
+
+gdpPercap
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1952
+
+</td>
+
+<td style="text-align:right;">
+
+28.801
+
+</td>
+
+<td style="text-align:right;">
+
+8425333
+
+</td>
+
+<td style="text-align:right;">
+
+779.4453
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1957
+
+</td>
+
+<td style="text-align:right;">
+
+30.332
+
+</td>
+
+<td style="text-align:right;">
+
+9240934
+
+</td>
+
+<td style="text-align:right;">
+
+820.8530
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1962
+
+</td>
+
+<td style="text-align:right;">
+
+31.997
+
+</td>
+
+<td style="text-align:right;">
+
+10267083
+
+</td>
+
+<td style="text-align:right;">
+
+853.1007
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1967
+
+</td>
+
+<td style="text-align:right;">
+
+34.020
+
+</td>
+
+<td style="text-align:right;">
+
+11537966
+
+</td>
+
+<td style="text-align:right;">
+
+836.1971
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1972
+
+</td>
+
+<td style="text-align:right;">
+
+36.088
+
+</td>
+
+<td style="text-align:right;">
+
+13079460
+
+</td>
+
+<td style="text-align:right;">
+
+739.9811
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1977
+
+</td>
+
+<td style="text-align:right;">
+
+38.438
+
+</td>
+
+<td style="text-align:right;">
+
+14880372
+
+</td>
+
+<td style="text-align:right;">
+
+786.1134
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1982
+
+</td>
+
+<td style="text-align:right;">
+
+39.854
+
+</td>
+
+<td style="text-align:right;">
+
+12881816
+
+</td>
+
+<td style="text-align:right;">
+
+978.0114
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1987
+
+</td>
+
+<td style="text-align:right;">
+
+40.822
+
+</td>
+
+<td style="text-align:right;">
+
+13867957
+
+</td>
+
+<td style="text-align:right;">
+
+852.3959
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1992
+
+</td>
+
+<td style="text-align:right;">
+
+41.674
+
+</td>
+
+<td style="text-align:right;">
+
+16317921
+
+</td>
+
+<td style="text-align:right;">
+
+649.3414
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+1997
+
+</td>
+
+<td style="text-align:right;">
+
+41.763
+
+</td>
+
+<td style="text-align:right;">
+
+22227415
+
+</td>
+
+<td style="text-align:right;">
+
+635.3414
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+2002
+
+</td>
+
+<td style="text-align:right;">
+
+42.129
+
+</td>
+
+<td style="text-align:right;">
+
+25268405
+
+</td>
+
+<td style="text-align:right;">
+
+726.7341
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Afghanistan
+
+</td>
+
+<td style="text-align:left;">
+
+Asia
+
+</td>
+
+<td style="text-align:right;">
+
+2007
+
+</td>
+
+<td style="text-align:right;">
+
+43.828
+
+</td>
+
+<td style="text-align:right;">
+
+31889923
+
+</td>
+
+<td style="text-align:right;">
+
+974.5803
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1952
+
+</td>
+
+<td style="text-align:right;">
+
+40.000
+
+</td>
+
+<td style="text-align:right;">
+
+2534927
+
+</td>
+
+<td style="text-align:right;">
+
+493.3239
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1957
+
+</td>
+
+<td style="text-align:right;">
+
+41.500
+
+</td>
+
+<td style="text-align:right;">
+
+2822082
+
+</td>
+
+<td style="text-align:right;">
+
+540.2894
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1962
+
+</td>
+
+<td style="text-align:right;">
+
+43.000
+
+</td>
+
+<td style="text-align:right;">
+
+3051242
+
+</td>
+
+<td style="text-align:right;">
+
+597.4731
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1967
+
+</td>
+
+<td style="text-align:right;">
+
+44.100
+
+</td>
+
+<td style="text-align:right;">
+
+3451079
+
+</td>
+
+<td style="text-align:right;">
+
+510.9637
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1972
+
+</td>
+
+<td style="text-align:right;">
+
+44.600
+
+</td>
+
+<td style="text-align:right;">
+
+3992121
+
+</td>
+
+<td style="text-align:right;">
+
+590.5807
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1977
+
+</td>
+
+<td style="text-align:right;">
+
+45.000
+
+</td>
+
+<td style="text-align:right;">
+
+4657072
+
+</td>
+
+<td style="text-align:right;">
+
+670.0806
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1982
+
+</td>
+
+<td style="text-align:right;">
+
+46.218
+
+</td>
+
+<td style="text-align:right;">
+
+5507565
+
+</td>
+
+<td style="text-align:right;">
+
+881.5706
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1987
+
+</td>
+
+<td style="text-align:right;">
+
+44.020
+
+</td>
+
+<td style="text-align:right;">
+
+6349365
+
+</td>
+
+<td style="text-align:right;">
+
+847.9912
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1992
+
+</td>
+
+<td style="text-align:right;">
+
+23.599
+
+</td>
+
+<td style="text-align:right;">
+
+7290203
+
+</td>
+
+<td style="text-align:right;">
+
+737.0686
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+1997
+
+</td>
+
+<td style="text-align:right;">
+
+36.087
+
+</td>
+
+<td style="text-align:right;">
+
+7212583
+
+</td>
+
+<td style="text-align:right;">
+
+589.9445
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+2002
+
+</td>
+
+<td style="text-align:right;">
+
+43.413
+
+</td>
+
+<td style="text-align:right;">
+
+7852401
+
+</td>
+
+<td style="text-align:right;">
+
+785.6538
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Rwanda
+
+</td>
+
+<td style="text-align:left;">
+
+Africa
+
+</td>
+
+<td style="text-align:right;">
+
+2007
+
+</td>
+
+<td style="text-align:right;">
+
+46.242
+
+</td>
+
+<td style="text-align:right;">
+
+8860588
+
+</td>
+
+<td style="text-align:right;">
+
+863.0885
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
 
 Now we have all the data from both countries :thumbsup:

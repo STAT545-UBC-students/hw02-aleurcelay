@@ -1,6 +1,7 @@
 ---
 title: "Alejandra_hw02_gapminder_dplyr"
 output: github_document
+always_allow_html: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -18,6 +19,7 @@ This document is intented to serve as a "cheatsheet" for future work on R.
 library(gapminder)
 library(tidyverse)
 library(knitr)
+library(kableExtra)
 ```
 
 
@@ -26,11 +28,12 @@ library(knitr)
 **Is it a data.frame, a matrix, a vector, a list?**
 
 ```{r}
-gapminder
+kable(head(gapminder)) %>%
+kable_styling()
 typeof(gapminder)
 ```
 
-When printing `gapminder` I can see the variables of the data set are arranged in columns and the observations of these variables are arranged in rows. This is a two dimensional object that holds different types of data. 
+When printing `head(gapminder)` I can see the variables of the data set and the first rows. The data is arranged in columns, and the observations of these variables are arranged in rows. This is a two dimensional object that holds different types of data. 
 I know this object is a data frame.
 
 The function `typeof()` determines the (R internal) type or storage mode of an object. The type of this data set is a **list**. A list in R allows to gather a variety of objects under one name in an ordered way. These objects can be matrices, vectors, data frames, other lists, etc. 
@@ -71,13 +74,23 @@ I can get the same information with `dim()` function, the output is (number of r
 ```{r}
 lapply(gapminder,class) %>%
   as.matrix() %>%
-  kable(col.names = "Data type",align = 'lc')
+  kable(col.names = "Data type",align = 'lc') %>%
+  kable_styling()
 ```
 
 I can also get all the above information with `str()` function:
 
 ```{r}
 str(gapminder)
+
+#Work around to show the data in a nice table:
+data.frame(variable = names(gapminder),
+          classe = sapply(gapminder, typeof),
+          first_values = sapply(gapminder, function(x) paste0(head(x),  collapse = ", ")),
+          row.names = NULL) %>% 
+          kable() %>%
+          kable_styling()
+
 ```
 
 ## Explore individual variables
@@ -117,6 +130,7 @@ ggplot(gapminder, aes(lifeExp)) +
          geom_histogram(aes(y=..density..),fill = "cornflowerblue", bins=50) +
   geom_density()
 ```
+
 The histogram shows two main peaks, where the most values are found: the biggest one around 70 years and the other one, close to 50 years.
 
 ## Explore various plot types
@@ -145,6 +159,7 @@ ggplot(a, aes(lifeExp,gdpPercap, color=continent)) +
     geom_point() +
     scale_y_log10()
 ```
+
 This graph presents data from only one year. It is easily appreciated the difference overall between lifeExp and gdpPercap in African countries where it is lower than in Europe and Oceania.
 
 ### A plot of one quantitative variable.
@@ -155,6 +170,7 @@ Now, I will look at the lifeExp data arranged by continent with a frequency poly
 ggplot(gapminder, aes(lifeExp, color=continent)) +
   geom_freqpoly()
 ```
+
 This plot shows the frequency of life expectancy values within the dataset. We can see a discrepancy between the most common values for life expectancy in Africa and Europe. 
 
 And now lets look at the distribution of this same variable among continents.
@@ -162,6 +178,7 @@ And now lets look at the distribution of this same variable among continents.
 ggplot(gapminder, aes(lifeExp, fill=continent)) +
   geom_density(alpha=0.3)
 ```
+
 In this plot it is easily appreciated that Europe and Oceania present a more homogenous distribution of life expectancy, while the rest of the continents have a wider range of values, probably because of bigger socio-economic gaps between countries.
 
 ```{r include = FALSE}
