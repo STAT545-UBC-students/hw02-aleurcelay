@@ -1,12 +1,13 @@
 Alejandra\_hw02\_gapminder\_dplyr
 ================
 
-\#Gapminder exploration and use of dplyr This is an R Markdown document
-used for exploring the gapminder dataset through the functions of the
-dplyr package. This document is intented to serve as a “cheatsheet” for
-future work on R.
+# Gapminder exploration and use of dplyr
 
-\#\#Loading data
+This is an R Markdown document used for exploring the gapminder dataset
+through the functions of the dplyr package. This document is intented to
+serve as a “cheatsheet” for future work on R.
+
+## Loading data
 
 ``` r
 library(gapminder)
@@ -30,7 +31,7 @@ library(knitr)
 
 ## Smell test the data
 
-Is it a data.frame, a matrix, a vector, a list?
+**Is it a data.frame, a matrix, a vector, a list?**
 
 ``` r
 gapminder
@@ -67,7 +68,7 @@ of an object. The type of this data set is a **list**. A list in R
 allows to gather a variety of objects under one name in an ordered way.
 These objects can be matrices, vectors, data frames, other lists, etc.
 
-What is its class?
+**What is its class?**
 
 ``` r
 class(gapminder)
@@ -77,7 +78,7 @@ class(gapminder)
 
 The `class()`function confirms that gapminder is a data frame. :+1:
 
-How many variables/columns?
+**How many variables/columns?**
 
 ``` r
 ncol(gapminder)
@@ -85,7 +86,7 @@ ncol(gapminder)
 
     ## [1] 6
 
-How many rows/observations?
+**How many rows/observations?**
 
 ``` r
 nrow(gapminder)
@@ -96,8 +97,9 @@ nrow(gapminder)
 `ncol()` and `nrow()` functions return the number of columns and rows,
 respectively.
 
-Can you get these facts about “extent” or “size” in more than one way?
-Can you imagine different functions being useful in different contexts?
+**Can you get these facts about “extent” or “size” in more than one way?
+Can you imagine different functions being useful in different
+contexts?**
 
 ``` r
 dim(gapminder) #rows, columns
@@ -117,7 +119,7 @@ what we want to look at. If I just want to know how big is my dataset
 dim() is great, if I for example want to iterate, on either columns or
 rows, then ncol or nrow would be sufficient.
 
-What data type is each variable?
+**What data type is each variable?**
 
 ``` r
 lapply(gapminder,class) %>%
@@ -358,7 +360,7 @@ more homogenous distribution of life expectancy, while the rest of the
 continents have a wider range of values, probably because of bigger
 socio-economic gaps between countries.
 
-### A plot of one quantitative variable and one categorical.
+### Plot of one quantitative variable and one categorical.
 
 First, I will arrange my data:
 
@@ -416,7 +418,8 @@ g1 <- ggplot(gapminder, aes(continent, pop, fill = continent)) +
 g2 <- ggplot(gapminder, aes(continent, lifeExp, fill = continent)) +
       geom_boxplot()+
       theme(legend.title = element_blank(), legend.position="none", axis.text.x = element_text(angle = 45, hjust = 1))+
-      xlab("")
+      xlab("") +
+      scale_y_continuous(breaks = seq(0,90,by=10))
 plot_grid(g1, g2) #used plot_grid to put plots together
 ```
 
